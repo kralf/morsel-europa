@@ -2,4 +2,4 @@
 # Submodules
 #===============================================================================
 
-from velocity_command import Velocity_command
+from velocity_command import VelocityCommand

@@ -16,39 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#ifndef RECEIVER_H
-#define RECEIVER_H
+#ifndef VELOCITY_COMMAND_H
+#define VELOCITY_COMMAND_H
 
-/** \file receiver.h
-    \brief This file defines the Receiver class which is an interface for
-           receiving from MOOS.
+/** \file velocity_command.h
+    \brief This file defines the VelocityCommand class which is an interface for
+           receiving velocity commands from MOOS.
   */
 
-#include <nodePath.h>
+#include <morsel-moos/input/receiver.h>
 
-class CMOOSCommClient;
-
-/** The Receiver class is an interface for receiving from MOOS.
-    \brief MOOS receiver
+/** The VelocityCommand class is an interface for receiving velocity commands
+    from MOOS.
+    \brief Velocity commands receiver
   */
-class Receiver :
-  public NodePath {
+class VelocityCommand :
+  public Receiver {
 PUBLISHED:
   /** \name Constructors/destructor
     @{
     */
   /// Constructor
-  Receiver(std::string name);
+  VelocityCommand(std::string name, PyObject* actuator);
   /// Destructor
-  virtual ~Receiver();
+  virtual ~VelocityCommand();
   /** @}
     */
 
   /** \name Methods
     @{
     */
-  /// Receive message from MOOS
-  virtual void receive(double time) = 0;
+  /// Receive velocity command from MOOS
+  virtual void receive(double time);
   /** @}
     */
 
@@ -58,21 +57,16 @@ protected:
   /** \name Protected methods
     @{
     */
-  /// Connect callback for MOOS
-  static bool onConnectCallback(void* param);
-  /// Disconnect callback for MOOS
-  static bool onDisconnectCallback(void* param);
   /** @}
     */
 
   /** \name Protected members
     @{
     */
-  /// Interface to MOOS
-  CMOOSCommClient* mComms;
+  PyObject* mActuator;
   /** @}
     */
 
 };
 
-#endif // RECEIVER_H
+#endif // VELOCITY_COMMAND_H

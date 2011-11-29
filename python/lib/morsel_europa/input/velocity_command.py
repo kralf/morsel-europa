@@ -22,10 +22,10 @@ from morsel_europa.morsel_europac import VelocityCommand as CVelocityCommand
 #-------------------------------------------------------------------------------
 
 class VelocityCommand(Input):
-  def __init__(self, world, name, source, **kargs):
-    Input.__init__(self, world, name, source, **kargs)
+  def __init__(self, world, name, actuator = None, platform = None, **kargs):
+    Input.__init__(self, world, name, actuator, **kargs)
 
-    self.input = CVelocityCommand(name)
+    self.input = CVelocityCommand(name, actuator)
     self.input.reparentTo(self)
 
 #-------------------------------------------------------------------------------

@@ -16,24 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "receiver.h"
-
-#include <MOOSLIB/MOOSCommClient.h>
+#include "velocity_command.h"
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Receiver::Receiver(string name) :
-  NodePath(name) {
-  mComms = new CMOOSCommClient();
-  mComms->SetOnConnectCallBack(onConnectCallback, this);
-  mComms->SetOnDisconnectCallBack(onDisconnectCallback, this);
-  mComms->Run("localhost", 9000, "MOOSPublisher", 10);
+VelocityCommand::VelocityCommand(std::string name, PyObject* actuator) :
+  Receiver(name),
+  mActuator(actuator) {
+  Py_XINCREF(actuator);
 }
 
-Receiver::~Receiver() {
-  delete mComms;
+VelocityCommand::~VelocityCommand() {
+  Py_XDECREF(actuator);
 }
 
 /******************************************************************************/
@@ -45,12 +41,20 @@ Receiver::~Receiver() {
 /* Methods                                                                    */
 /******************************************************************************/
 
-bool Receiver::onConnectCallback(void* param) {
-  return true;
-}
+void VelocityCommand::receive(double time) {
+  PyObject* command = PyList_New(2);
+  Py_XINCREF(command);
+  
+  for (size_t i = 0; i < numValues; ++i) {
+    double f_i;
+    (*this) >> f_i;
+    
+    PyObject* p_i = PyFloat_FromDouble(f_i);
+    Py_XINCREF(p_i);
+    PyList_SetItem(command, i, p_i);
+    Py_XDECREF(p_i);
+  }
 
-bool Receiver::onDisconnectCallback(void* param) {
-  Receiver* publisher = (Receiver*)param;
-  publisher->mComms->Close();
-  return true;
+  PyObject_SetAttrString(actuator, "command", command);
+  Py_XDECREF(command);
 }
