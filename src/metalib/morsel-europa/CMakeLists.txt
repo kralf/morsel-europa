@@ -1,9 +1,9 @@
 panda3d_interrogate_module(
-  morselc
+  morsel_europac
   COMMAND ${PANDA3D_INTERROGATE_MODULE_EXECUTABLE}
-  MODULE morsel
+  MODULE morsel_europa
 )
 
 remake_add_library(
-  morselc PREFIX panda3d- LINK morsel ${PANDA3D_PANDA_LIBRARY}
+  morsel_europac PREFIX panda3d- LINK output ${PANDA3D_PANDA_LIBRARY}
 )

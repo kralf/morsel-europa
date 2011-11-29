@@ -4,26 +4,33 @@ include(ReMake)
 include(Panda3D)
 
 remake_project(
-  Morsel Non-free
-  VERSION 1.0
-  RELEASE beta
-  SUMMARY "MObile Robot Simulator (Non-free Content)."
-  AUTHOR "Ralf Kaestner"
-  CONTACT "ralf.kaestner@gmail.com"
-  HOME "http://aslforge.ethz.ch/projects/morsel-nonfree"
-  LICENSE "Proprietary License"
+  morsel-europa
+  VERSION 0.1
+  RELEASE alpha
+  SUMMARY "Morsel EUROPA interface"
+  AUTHOR "Jerome Maye"
+  CONTACT "jerome.maye@mavt.ethz.ch"
+  HOME "http://aslforge.ethz.ch/projects/morsel-europa"
+  LICENSE "GNU Lesser General Public License (LGPL)"
   INSTALL /usr
-  PREFIX morsel-
 )
 
-remake_add_directories(
-  data
-  COMPONENT data-nonfree
+remake_python()
+
+remake_pack_deb(morsel-moos)
+
+remake_pack_deb(
+  COMPONENT dev
+  DESCRIPTION "Development headers"
+  morsel-moos-dev morsel-europa
+)
+
+remake_doc(
+  html
+  latex
 )
 
 remake_pack_deb(
-  ARCH all
-  COMPONENT data-nonfree
-  DESCRIPTION "non-free data"
-  morsel
+  COMPONENT python
+  morsel-europa morsel-python
 )
