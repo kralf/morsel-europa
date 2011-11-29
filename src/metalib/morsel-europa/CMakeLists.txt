@@ -5,5 +5,5 @@ panda3d_interrogate_module(
 )
 
 remake_add_library(
-  morsel_europac PREFIX panda3d- LINK output ${PANDA3D_PANDA_LIBRARY}
+  morsel_europac PREFIX panda3d- LINK input ${PANDA3D_PANDA_LIBRARY}
 )
