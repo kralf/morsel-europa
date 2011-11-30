@@ -16,47 +16,45 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#ifndef VELOCITY_COMMAND_H
-#define VELOCITY_COMMAND_H
+#ifndef ODOMETRY_H
+#define ODOMETRY_H
 
-/** \file velocity_command.h
-    \brief This file defines the VelocityCommand class which is an interface for
-           receiving velocity commands from MOOS.
+/** \file odometry.h
+    \brief This file defines the Odometry class which is an interface for
+           publishing odometry messages through MOOS.
   */
 
-#include <morsel-moos/input/receiver.h>
+#include <morsel-moos/output/publisher.h>
 
-class CMOOSMsg;
-
-/** The VelocityCommand class is an interface for receiving velocity commands
-    from MOOS.
-    \brief Velocity commands receiver
+/** The Odometry class is an interface for publishing odometry messages through
+    MOOS.
+    \brief Odometry messages publisher
   */
-class VelocityCommand :
-  public Receiver {
+class Odometry :
+  public Publisher {
 PUBLISHED:
   /** \name Constructors/destructor
     @{
     */
   /// Constructor
-  VelocityCommand(std::string name, PyObject* actuator, std::string
+  Odometry(std::string name, PyObject* actuator, std::string
     configFile = "");
   /// Destructor
-  virtual ~VelocityCommand();
+  virtual ~Odometry();
+  /** @}
+    */
+
+  /** \name Methods
+    @{
+    */
+  /// Update method called by simulator
+  virtual void publish(double time);
   /** @}
     */
 
 public:
 
 protected:
-  /** \name Protected methods
-    @{
-    */
-  /// Handle the received MOOS message
-  virtual void receive(double time, const CMOOSMsg& msg);
-  /** @}
-    */
-
   /** \name Protected members
     @{
     */
@@ -67,4 +65,4 @@ protected:
 
 };
 
-#endif // VELOCITY_COMMAND_H
+#endif // ODOMETRY_H

@@ -16,24 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "velocity_command.h"
+#include "odometry.h"
 
 #include <MOOSLIB/MOOSCommClient.h>
 
-#include <moosMessages/velocityCommandMsg.h>
+#include <moosMessages/odomMsg.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-VelocityCommand::VelocityCommand(std::string name, PyObject* actuator,
+Odometry::Odometry(std::string name, PyObject* actuator,
   std::string configFile) :
-  Receiver(name, MsgTraits<VelocityCommandMsg>::name(), configFile),
+  Publisher(name, MsgTraits<OdomMsg>::name(), configFile),
   mActuator(actuator) {
   Py_XINCREF(mActuator);
 }
 
-VelocityCommand::~VelocityCommand() {
+Odometry::~Odometry() {
   Py_XDECREF(mActuator);
 }
 
@@ -46,19 +46,13 @@ VelocityCommand::~VelocityCommand() {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void VelocityCommand::receive(double time, const CMOOSMsg& msg) {
-  VelocityCommandMsg vMsg;
-  vMsg.fromString(msg.GetString());
-  PyObject* command = PyList_New(2);
-  Py_XINCREF(command);
-  PyObject* tv = PyFloat_FromDouble(vMsg.tv);
-  Py_XINCREF(tv);
-  PyList_SetItem(command, 0, tv);
-  Py_XDECREF(tv);
-  PyObject* rv = PyFloat_FromDouble(180.0 * vMsg.rv / M_PI);
-  Py_XINCREF(rv);
-  PyList_SetItem(command, 1, rv);
-  Py_XDECREF(rv);
-  PyObject_SetAttrString(mActuator, "command", command);
-  Py_XDECREF(command);
+void Odometry::publish(double time) {
+  OdomMsg oMsg;
+  oMsg.pose[0] = 0;
+  oMsg.pose[1] = 0;
+  oMsg.pose[2] = 0;
+  oMsg.velocity[0] = 0;
+  oMsg.velocity[1] = 0;
+  oMsg.velocity[2] = 0;
+  oMsg.timestamp = MOOSTime();
 }

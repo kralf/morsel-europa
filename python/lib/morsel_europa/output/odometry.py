@@ -16,22 +16,22 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.         #
 ################################################################################
 
-from morsel.nodes import Input
-from morsel_europa.morsel_europac import VelocityCommand as CVelocityCommand
+from morsel.nodes import Output
+from morsel_europa.morsel_europac import Odometry as COdometry
 
 #-------------------------------------------------------------------------------
 
-class VelocityCommand(Input):
+class Odometry(Output):
   def __init__(self, world, name, actuator = None, platform = None, **kargs):
     if platform:
       actuator = platform.actuator
 
-    Input.__init__(self, world, name, actuator, **kargs)
+    Output.__init__(self, world, name, actuator, **kargs)
 
-    self.input = CVelocityCommand(name, actuator)
-    self.input.reparentTo(self)
+    self.output = COdometry(name, actuator)
+    self.output.reparentTo(self)
 
 #-------------------------------------------------------------------------------
 
-  def inputData(self, period):
-    self.input.receive(self.world.time)
+  def outputData(self, period):
+    self.output.publish(self.world.time)
