@@ -16,42 +16,49 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "odometry.h"
+#include "laser.h"
 
 #include <stdexcept>
 
+#include <morsel/sensors/range_sensor.h>
+
 #include <MOOSLIB/MOOSCommClient.h>
 
-#include <moosMessages/odomMsg.h>
+#include <moosMessages/laserMsg.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Odometry::Odometry(std::string name, PyObject* actuator,
-  std::string configFile) :
-  Publisher(name, MsgTraits<OdomMsg>::name(), configFile),
-  mActuator(actuator) {
-  Py_XINCREF(mActuator);
+Laser::Laser(std::string name, NodePath& sensor, std::string configFile) :
+  Publisher(name, "LASER_LMS_TOP", configFile),
+  mSensor(static_cast<RangeSensor&>(sensor)) {
 }
 
-Odometry::~Odometry() {
-  Py_XDECREF(mActuator);
+Laser::~Laser() {
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-void Odometry::publish(double time) {
-  OdomMsg msg;
-  msg.pose[0] = 0;
-  msg.pose[1] = 0;
-  msg.pose[2] = 0;
-  msg.velocity[0] = 0;
-  msg.velocity[1] = 0;
-  msg.velocity[2] = 0;
+void Laser::publish(double time) {
+  LaserMsg msg;
+  msg.type = "SICK_LMS_100";
   msg.timestamp = MOOSTime();
+  msg.resolution = 0.5;
+  msg.minAngle = -90.25;
+  msg.maxAngle = msg.minAngle + msg.resolution * (mSensor.getNumRays() - 1);
+  msg.offset = 0.0;
+  msg.maxRange = 15;
+  msg.id++;
+  msg.count++;
+  msg.range.clear();
+  for (size_t i = 0; i < mSensor.getNumRays(); ++i) {
+    RangeSensor::Ray ray = mSensor.getRay(i);
+    msg.range.push_back(std::sqrt(ray.point[0] * ray.point[0] +
+      ray.point[1] * ray.point[1] + ray.point[2] * ray.point[2]));
+  }
   if (!publishString(msg.toString()))
-    std::cerr << "Odometry::publish(): failed to publish on MOOS" << std::endl;
+    std::cerr << "Laser::publish(): failed to publish on MOOS" << std::endl;
 }

@@ -16,42 +16,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "odometry.h"
+#ifndef LASER_H
+#define LASER_H
 
-#include <stdexcept>
+/** \file laser.h
+    \brief This file defines the Laser class which is an interface for
+           publishing laser messages through MOOS.
+  */
 
-#include <MOOSLIB/MOOSCommClient.h>
+#include <morsel-moos/output/publisher.h>
 
-#include <moosMessages/odomMsg.h>
+class RangeSensor;
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+/** The Laser class is an interface for publishing laser messages through
+    MOOS.
+    \brief Laser messages publisher
+  */
+class Laser :
+  public Publisher {
+PUBLISHED:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Constructor
+  Laser(std::string name, NodePath& sensor, std::string configFile = "");
+  /// Destructor
+  virtual ~Laser();
+  /** @}
+    */
 
-Odometry::Odometry(std::string name, PyObject* actuator,
-  std::string configFile) :
-  Publisher(name, MsgTraits<OdomMsg>::name(), configFile),
-  mActuator(actuator) {
-  Py_XINCREF(mActuator);
-}
+  /** \name Methods
+    @{
+    */
+  /// Update method called by simulator
+  virtual void publish(double time);
+  /** @}
+    */
 
-Odometry::~Odometry() {
-  Py_XDECREF(mActuator);
-}
+public:
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+protected:
+  /** \name Protected members
+    @{
+    */
+  /// Morsel range sensor
+  RangeSensor& mSensor;
+  /** @}
+    */
 
-void Odometry::publish(double time) {
-  OdomMsg msg;
-  msg.pose[0] = 0;
-  msg.pose[1] = 0;
-  msg.pose[2] = 0;
-  msg.velocity[0] = 0;
-  msg.velocity[1] = 0;
-  msg.velocity[2] = 0;
-  msg.timestamp = MOOSTime();
-  if (!publishString(msg.toString()))
-    std::cerr << "Odometry::publish(): failed to publish on MOOS" << std::endl;
-}
+};
+
+#endif // LASER_H

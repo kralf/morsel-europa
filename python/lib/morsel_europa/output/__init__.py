@@ -3,3 +3,4 @@
 #===============================================================================
 
 from odometry import Odometry
+from laser import Laser
