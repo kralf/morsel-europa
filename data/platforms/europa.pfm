@@ -1,0 +1,28 @@
+type                     = "Wheeled"
+chassisType              = "Differential"
+
+mesh                     = "platforms/europa.bam"
+body                     = "body"
+wheels                   = ["wheel_l", "wheel_r", "wheel_cf", "wheel_cr"]
+casterCranks             = ["crank_cf", "crank_cr"]
+casterWheels             = ["wheel_cf", "wheel_cr"]
+
+bodySolid                = "Box"
+bodyBody                 = "Box"
+wheelSolid               = "Cylinder"
+wheelBody                = "Cylinder"
+crankSolid               = "Box"
+crankBody                = "Box"
+
+bodyMass                 = 120
+bodyMassOffset           = [0, 0, -0.6]
+wheelMass                = [0.5, 0.5, 0.2, 0.2]
+wheelSuspension          = [0.01, 0.01, 0.1, 0.1]
+crankMass                = [0.2, 0.2]
+
+maxTranslationalVelocity = 1.6
+maxRotationalVelocity    = 90
+maxAcceleration          = 30/3.6
+maxDeceleration          = 300/3.6
+
+propulsionForce          = 750

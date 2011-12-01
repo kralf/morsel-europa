@@ -16,9 +16,14 @@ remake_project(
 )
 
 remake_python()
+remake_add_directories(
+  data
+  COMPONENT data
+)
 
-remake_pack_deb(morsel-moos)
-
+remake_pack_deb(
+  morsel-moos
+)
 remake_pack_deb(
   COMPONENT dev
   DESCRIPTION "Development headers"
