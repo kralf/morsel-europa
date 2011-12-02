@@ -54,11 +54,10 @@ Odometry::~Odometry() {
 void Odometry::publish(double time) {
   LVecBase3f pos = mActuator.get_pos(mOrigin);
   LVecBase3f hpr = mActuator.get_hpr(mOrigin);
-
   OdomMsg msg;
   msg.pose[0] = pos[0];
   msg.pose[1] = pos[1];
-  msg.pose[2] = hpr[0]*M_PI/180.0;
+  msg.pose[2] = hpr[0] * M_PI / 180.0;
   msg.velocity[0] = 0;
   msg.velocity[1] = 0;
   msg.velocity[2] = 0;

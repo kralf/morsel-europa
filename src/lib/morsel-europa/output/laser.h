@@ -39,7 +39,8 @@ PUBLISHED:
     @{
     */
   /// Constructor
-  Laser(std::string name, NodePath& sensor, std::string configFile = "");
+  Laser(std::string name, NodePath& sensor, std::string msgName, std::string
+    laserName = "SICK_LMS_100", std::string configFile = "");
   /// Destructor
   virtual ~Laser();
   /** @}
@@ -61,6 +62,8 @@ protected:
     */
   /// Morsel range sensor
   RangeSensor& mSensor;
+  /// Laser name
+  std::string mLaserName;
   /** @}
     */
 

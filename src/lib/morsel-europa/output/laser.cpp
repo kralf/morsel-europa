@@ -30,9 +30,11 @@
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Laser::Laser(std::string name, NodePath& sensor, std::string configFile) :
-  Publisher(name, "LASER_LMS_TOP", configFile),
-  mSensor(static_cast<RangeSensor&>(sensor)) {
+Laser::Laser(std::string name, NodePath& sensor, std::string msgName,
+  std::string laserName, std::string configFile) :
+  Publisher(name, msgName, configFile),
+  mSensor(static_cast<RangeSensor&>(sensor)),
+  mLaserName(laserName) {
 }
 
 Laser::~Laser() {
@@ -49,7 +51,7 @@ void Laser::publish(double time) {
   const LVecBase2f& maxAngles = mSensor.getMaxAngles();
   static size_t counter = 0;
   LaserMsg msg;
-  msg.type = "SICK_LMS_100";
+  msg.type = mLaserName;
   msg.timestamp = MOOSTime();
   msg.resolution = resolution[0] * 180.0 / M_PI;
   msg.minAngle = (minAngles[0] + 0.5 * resolution[0]) * 180.0 / M_PI;

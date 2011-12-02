@@ -22,10 +22,10 @@ from morsel_europa.morsel_europac import Laser as CLaser
 #-------------------------------------------------------------------------------
 
 class Laser(Output):
-  def __init__(self, world, name, sensor = None, **kargs):
+  def __init__(self, world, name, sensor, moosMsgName, **kargs):
     Output.__init__(self, world, name, sensor, **kargs)
 
-    self.output = CLaser(name, sensor.sensor)
+    self.output = CLaser(name, sensor.sensor, moosMsgName)
     self.output.reparentTo(self)
 
 #-------------------------------------------------------------------------------
