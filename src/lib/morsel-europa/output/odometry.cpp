@@ -24,6 +24,8 @@
 
 #include <moosMessages/odomMsg.h>
 
+#include <py_panda.h>
+
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
@@ -31,12 +33,18 @@
 Odometry::Odometry(std::string name, PyObject* actuator,
   std::string configFile) :
   Publisher(name, MsgTraits<OdomMsg>::name(), configFile),
-  mActuator(actuator) {
-  Py_XINCREF(mActuator);
+  mPyActuator(actuator),
+  mActuator(*(NodePath*)DTOOL_Call_GetPointerThis(mPyActuator)) {
+  Py_XINCREF(mPyActuator);
+
+  mOriginNode = new PandaNode(name+"Origin");
+  mOrigin = mActuator.get_parent().attach_new_node(mOriginNode);
+
+  mOrigin.clear_transform(mActuator);
 }
 
 Odometry::~Odometry() {
-  Py_XDECREF(mActuator);
+  Py_XDECREF(mPyActuator);
 }
 
 /******************************************************************************/
@@ -44,10 +52,13 @@ Odometry::~Odometry() {
 /******************************************************************************/
 
 void Odometry::publish(double time) {
+  LVecBase3f pos = mActuator.get_pos(mOrigin);
+  LVecBase3f hpr = mActuator.get_hpr(mOrigin);
+
   OdomMsg msg;
-  msg.pose[0] = 0;
-  msg.pose[1] = 0;
-  msg.pose[2] = 0;
+  msg.pose[0] = pos[0];
+  msg.pose[1] = pos[1];
+  msg.pose[2] = hpr[0]*M_PI/180.0;
   msg.velocity[0] = 0;
   msg.velocity[1] = 0;
   msg.velocity[2] = 0;

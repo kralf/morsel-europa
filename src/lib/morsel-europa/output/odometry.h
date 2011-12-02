@@ -59,10 +59,13 @@ protected:
     @{
     */
   /// Morsel actuator
-  PyObject* mActuator;
+  PyObject* mPyActuator;
+  NodePath& mActuator;
+
+  PointerTo<PandaNode> mOriginNode;
+  NodePath mOrigin;
   /** @}
     */
-
 };
 
 #endif // ODOMETRY_H
