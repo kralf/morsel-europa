@@ -17,7 +17,7 @@ crankBody                = "Box"
 bodyMass                 = 120
 bodyMassOffset           = [0, 0, -0.6]
 wheelMass                = [0.5, 0.5, 0.2, 0.2]
-wheelSuspension          = [0.01, 0.01, 0.1, 0.1]
+wheelSuspension          = [0.1, 0.1, 0.2, 0.2]
 crankMass                = [0.2, 0.2]
 
 maxTranslationalVelocity = 1.6
@@ -25,4 +25,4 @@ maxRotationalVelocity    = 90
 maxAcceleration          = 30/3.6
 maxDeceleration          = 300/3.6
 
-propulsionForce          = 750
+propulsionForce          = 1000
