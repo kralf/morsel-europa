@@ -16,8 +16,22 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.         #
 ################################################################################
 
-#===============================================================================
-# Submodules
-#===============================================================================
+from morsel.nodes import Output
+from morsel_europa.morsel_europac import IMU as CIMU
 
-from velocity_command import VelocityCommand
+#-------------------------------------------------------------------------------
+
+class IMU(Output):
+  def __init__(self, world, name, actuator = None, platform = None, **kargs):
+    if platform:
+      actuator = platform.actuator
+
+    Output.__init__(self, world, name, actuator, **kargs)
+
+    self.output = CIMU(name, actuator)
+    self.output.reparentTo(self)
+
+#-------------------------------------------------------------------------------
+
+  def outputData(self, period):
+    self.output.publish(self.world.time)
