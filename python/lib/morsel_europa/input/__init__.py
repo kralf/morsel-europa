@@ -20,4 +20,4 @@
 # Submodules
 #===============================================================================
 
-from velocity_command import VelocityCommand
+from europa_velocity_command import EuropaVelocityCommand

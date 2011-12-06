@@ -16,56 +16,51 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#ifndef ODOMETRY_H
-#define ODOMETRY_H
+#ifndef EUROPA_IMU_H
+#define EUROPA_IMU_H
 
-/** \file odometry.h
-    \brief This file defines the Odometry class which is an interface for
-           publishing odometry messages through MOOS.
+/** \file europa_imu.h
+    \brief This file defines the IMU class which is an interface for
+           publishing IMU messages through MOOS.
   */
 
-#include <morsel-moos/output/publisher.h>
+#include <morsel-moos/output/moos_publisher.h>
 
-/** The Odometry class is an interface for publishing odometry messages through
+/** The IMU class is an interface for publishing IMU messages through
     MOOS.
-    \brief Odometry messages publisher
+    \brief Europa IMU messages publisher
   */
-class Odometry :
-  public Publisher {
+class EuropaIMU :
+  public MOOSPublisher {
 PUBLISHED:
   /** \name Constructors/destructor
     @{
     */
   /// Constructor
-  Odometry(std::string name, PyObject* actuator, std::string
-    configFile = "");
+  EuropaIMU(std::string name, MOOSClient& client, std::string msgName = "");
   /// Destructor
-  virtual ~Odometry();
+  virtual ~EuropaIMU();
   /** @}
     */
 
-  /** \name Methods
+  /** \name Published methods
     @{
     */
   /// Update method called by simulator
-  virtual void publish(double time);
+  void publish(double time, const LVecBase3f& orientation, const
+    LVecBase3f& acceleration);
   /** @}
     */
-
-public:
 
 protected:
   /** \name Protected members
     @{
     */
-  /// Morsel actuator
-  PyObject* mPyActuator;
-  NodePath& mActuator;
-
-  PointerTo<PandaNode> mOriginNode;
-  NodePath mOrigin;
+  /// Message name
+  std::string mMsgName;
   /** @}
     */
+
 };
 
-#endif // ODOMETRY_H
+#endif // EUROPA_IMU_H

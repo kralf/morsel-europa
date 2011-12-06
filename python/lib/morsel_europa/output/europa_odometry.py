@@ -16,19 +16,36 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.         #
 ################################################################################
 
-from morsel.nodes import Output
-from morsel_europa.morsel_europac import Laser as CLaser
+from morsel.nodes import Output, Node
+from morsel_europa.europac import EuropaOdometry as CEuropaOdometry
 
 #-------------------------------------------------------------------------------
 
-class Laser(Output):
-  def __init__(self, world, name, sensor, moosMsgName, **kargs):
-    Output.__init__(self, world, name, sensor, **kargs)
+class EuropaOdometry(Output):
+  def __init__(self, world, client, platform, name = None,
+      message = "ODOMETRY_POSE", **kargs):
+    if not name:
+      name = message
+      
+    Output.__init__(self, world, name, **kargs)
 
-    self.output = CLaser(name, sensor.sensor, moosMsgName)
-    self.output.reparentTo(self)
+    self.client = client
+    self.platform = platform
+    self.message = message
+
+    self.publisher = CEuropaOdometry(name, self.client.client, self.message)
+    self.publisher.reparentTo(self)
+
+    self.origin = Node(world, name+"Origin", parent = self);
+    self.origin.clearTransform(self.platform)
 
 #-------------------------------------------------------------------------------
 
-  def outputData(self, period):
-    self.output.publish(self.world.time)
+  def outputData(self, time):
+    position = self.platform.getPosition(self.origin);
+    orientation = self.platform.getOrientation(self.origin);
+
+    pose = panda.Vec3(position[0], position[1], orientation[0])
+    velocity = panda.Vec2(*self.platform.chassis.state)
+    
+    self.publisher.publish(time, pose, velocity)

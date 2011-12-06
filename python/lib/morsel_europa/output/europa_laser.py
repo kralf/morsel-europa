@@ -17,21 +17,26 @@
 ################################################################################
 
 from morsel.nodes import Output
-from morsel_europa.morsel_europac import Odometry as COdometry
+from morsel_europa.europac import EuropaLaser as CEuropaLaser
 
 #-------------------------------------------------------------------------------
 
-class Odometry(Output):
-  def __init__(self, world, name, actuator = None, platform = None, **kargs):
-    if platform:
-      actuator = platform.actuator
+class EuropaLaser(Output):
+  def __init__(self, world, client, message, sensor, name = None, **kargs):
+    if not name:
+      name = message
+        
+    Output.__init__(self, world, name, **kargs)
 
-    Output.__init__(self, world, name, actuator, **kargs)
+    self.client = client
+    self.sensor = sensor
+    self.message = message
 
-    self.output = COdometry(name, actuator)
-    self.output.reparentTo(self)
+    self.publisher = CEuropaLaser(name, self.client.client,
+      self.sensor.sensor, self.message)
+    self.publisher.reparentTo(self)
 
 #-------------------------------------------------------------------------------
 
-  def outputData(self, period):
-    self.output.publish(self.world.time)
+  def outputData(self, time):
+    self.publisher.publish(time)

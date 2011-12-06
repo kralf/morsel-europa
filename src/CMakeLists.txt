@@ -1,8 +1,7 @@
 remake_find_package(PythonLibs)
 remake_find_library(panda3d-panda panda.h PACKAGE Panda3d)
-remake_find_library(panda3d-morsel_moosc morsel-moos/moos/moos_client.h PACKAGE
-  morsel-moos)
-remake_find_library(MOOS MOOSLIB/MOOSCommClient.h PACKAGE MOOS)
+remake_find_library(panda3d-morsel_moosc morsel-moos/client/moos_client.h
+  PACKAGE morsel-moos)
 remake_find_library(europa_alu_moosMessages moosMessages/genericMessage.h
   PACKAGE moosMessages)
 

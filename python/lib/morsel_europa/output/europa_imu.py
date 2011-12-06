@@ -17,21 +17,27 @@
 ################################################################################
 
 from morsel.nodes import Output
-from morsel_europa.morsel_europac import IMU as CIMU
+from morsel_europa.europac import EuropaIMU as CEuropaIMU
 
 #-------------------------------------------------------------------------------
 
-class IMU(Output):
-  def __init__(self, world, name, actuator = None, platform = None, **kargs):
-    if platform:
-      actuator = platform.actuator
+class EuropaIMU(Output):
+  def __init__(self, world, client, sensor, name = None, message = "INERTIAL",
+      **kargs):
+    if not name:
+      name = message
 
-    Output.__init__(self, world, name, actuator, **kargs)
+    Output.__init__(self, world, name, **kargs)
 
-    self.output = CIMU(name, actuator)
-    self.output.reparentTo(self)
+    self.client = client
+    self.sensor = sensor
+    self.message = message
+
+    self.publisher = CEuropaIMU(name, self.client.client, self.message)
+    self.publisher.reparentTo(self)
 
 #-------------------------------------------------------------------------------
 
-  def outputData(self, period):
-    self.output.publish(self.world.time)
+  def outputData(self, time):
+    self.publisher.publish(time, panda.Vec3(*self.sensor.globalOrientation),
+      panda.Vec3(*self.sensor.translationalAcceleration))

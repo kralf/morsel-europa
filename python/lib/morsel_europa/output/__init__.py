@@ -20,6 +20,6 @@
 # Submodules
 #===============================================================================
 
-from odometry import Odometry
-from laser import Laser
-from imu import IMU
+from europa_odometry import EuropaOdometry
+from europa_laser import EuropaLaser
+from europa_imu import EuropaIMU

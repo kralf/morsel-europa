@@ -16,44 +16,47 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "velocity_command.h"
+#include "europa_imu.h"
 
-#include <MOOSLIB/MOOSCommClient.h>
-
-#include <moosMessages/velocityCommandMsg.h>
+#include <moosMessages/imuMsg.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-VelocityCommand::VelocityCommand(std::string name, PyObject* actuator,
-  std::string configFile) :
-  Receiver(name, MsgTraits<VelocityCommandMsg>::name(), configFile),
-  mActuator(actuator) {
-  Py_XINCREF(mActuator);
+EuropaIMU::EuropaIMU(std::string name, MOOSClient& client, std::string
+    msgName) :
+  MOOSPublisher(name, client),
+  mMsgName(msgName.empty() ? MsgTraits<ImuMsg>::name() : msgName) {
 }
 
-VelocityCommand::~VelocityCommand() {
-  Py_XDECREF(mActuator);
+EuropaIMU::~EuropaIMU() {
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-void VelocityCommand::receive(double time, const CMOOSMsg& msg) {
-  VelocityCommandMsg vMsg;
-  vMsg.fromString(msg.GetString());
-  PyObject* command = PyList_New(2);
-  Py_XINCREF(command);
-  PyObject* tv = PyFloat_FromDouble(vMsg.tv);
-  Py_XINCREF(tv);
-  PyList_SetItem(command, 0, tv);
-  Py_XDECREF(tv);
-  PyObject* rv = PyFloat_FromDouble(180.0 * vMsg.rv / M_PI);
-  Py_XINCREF(rv);
-  PyList_SetItem(command, 1, rv);
-  Py_XDECREF(rv);
-  PyObject_SetAttrString(mActuator, "command", command);
-  Py_XDECREF(command);
+void EuropaIMU::publish(double time, const LVecBase3f& orientation,
+    const LVecBase3f& acceleration) {
+  LQuaternionf quaternion;
+  quaternion.set_hpr(orientation);
+  
+  ImuMsg msg;
+  msg.quat[0] = quaternion.get_r();
+  msg.quat[1] = quaternion.get_i();
+  msg.quat[2] = quaternion.get_j();
+  msg.quat[3] = quaternion.get_k();
+  msg.acc[0] = acceleration[0];
+  msg.acc[1] = acceleration[1];
+  msg.acc[2] = acceleration[2];
+  msg.gyro[0] = orientation[2];
+  msg.gyro[1] = orientation[1];
+  msg.gyro[2] = orientation[0];
+  msg.mag[0] = 0.0;
+  msg.mag[1] = 0.0;
+  msg.mag[2] = 0.0;
+  msg.timestamp = mClient->getTime();
+  
+  MOOSPublisher::publish(mMsgName, msg.toString());
 }

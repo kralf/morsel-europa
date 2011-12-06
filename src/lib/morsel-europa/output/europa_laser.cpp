@@ -16,52 +16,56 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "odometry.h"
+#include "europa_laser.h"
 
-#include <stdexcept>
+#include <morsel/sensors/range_sensor.h>
 
-#include <MOOSLIB/MOOSCommClient.h>
-
-#include <moosMessages/odomMsg.h>
-
-#include <py_panda.h>
+#include <moosMessages/laserMsg.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Odometry::Odometry(std::string name, PyObject* actuator,
-  std::string configFile) :
-  Publisher(name, MsgTraits<OdomMsg>::name(), configFile),
-  mPyActuator(actuator),
-  mActuator(*(NodePath*)DTOOL_Call_GetPointerThis(mPyActuator)) {
-  Py_XINCREF(mPyActuator);
-
-  mOriginNode = new PandaNode(name+"Origin");
-  mOrigin = mActuator.get_parent().attach_new_node(mOriginNode);
-
-  mOrigin.clear_transform(mActuator);
+EuropaLaser::EuropaLaser(std::string name, MOOSClient& client, NodePath&
+    sensor, std::string msgName, std::string laserName) :
+  MOOSPublisher(name, client),
+  mSensor(static_cast<RangeSensor&>(sensor)),
+  mMsgName(msgName),
+  mLaserName(laserName) {
 }
 
-Odometry::~Odometry() {
-  Py_XDECREF(mPyActuator);
+EuropaLaser::~EuropaLaser() {
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-void Odometry::publish(double time) {
-  LVecBase3f pos = mActuator.get_pos(mOrigin);
-  LVecBase3f hpr = mActuator.get_hpr(mOrigin);
-  OdomMsg msg;
-  msg.pose[0] = pos[0];
-  msg.pose[1] = pos[1];
-  msg.pose[2] = hpr[0] * M_PI / 180.0;
-  msg.velocity[0] = 0;
-  msg.velocity[1] = 0;
-  msg.velocity[2] = 0;
-  msg.timestamp = MOOSTime();
-  if (!publishString(msg.toString()))
-    std::cerr << "Odometry::publish(): failed to publish on MOOS" << std::endl;
+void EuropaLaser::publish(double time) {
+  const LVecBase2f& resolution = mSensor.getResolution();
+  const LVecBase2f& rangeLimits = mSensor.getRangeLimits();
+  const LVecBase2f& minAngles = mSensor.getMinAngles();
+  const LVecBase2f& maxAngles = mSensor.getMaxAngles();
+  static size_t counter = 0;
+
+  LaserMsg msg;
+  msg.type = mLaserName;
+  msg.timestamp = mClient->getTime();
+  msg.resolution = resolution[0] * 180.0 / M_PI;
+  msg.minAngle = (minAngles[0] + 0.5 * resolution[0]) * 180.0 / M_PI;
+  msg.maxAngle = (maxAngles[0] - 0.5 * resolution[0]) * 180.0 / M_PI;
+  msg.offset = 0.0;
+  msg.maxRange = rangeLimits[1];
+  msg.id = counter;
+  msg.count = counter++;
+  for (size_t i = 0; i < mSensor.getNumRays(); ++i) {
+    RangeSensor::Ray ray = mSensor.getRay(i);
+    if (ray.valid)
+      msg.range.push_back(std::sqrt(ray.point[0] * ray.point[0] +
+        ray.point[1] * ray.point[1] + ray.point[2] * ray.point[2]));
+    else
+      msg.range.push_back(-1);
+  }
+
+  MOOSPublisher::publish(mMsgName, msg.toString());
 }

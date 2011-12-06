@@ -16,57 +16,50 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#ifndef LASER_H
-#define LASER_H
+#ifndef EUROPA_ODOMETRY_H
+#define EUROPA_ODOMETRY_H
 
-/** \file laser.h
-    \brief This file defines the Laser class which is an interface for
-           publishing laser messages through MOOS.
+/** \file europa_odometry.h
+    \brief This file defines the EuropaOdometry class which is an interface
+           for publishing Europa odometry messages through MOOS.
   */
 
-#include <morsel-moos/output/publisher.h>
+#include <morsel-moos/output/moos_publisher.h>
 
-class RangeSensor;
-
-/** The Laser class is an interface for publishing laser messages through
-    MOOS.
-    \brief Laser messages publisher
+/** The EuropaOdometry class is an interface for publishing Europa odometry
+    messages through MOOS.
+    \brief Europa odometry messages publisher
   */
-class Laser :
-  public Publisher {
+class EuropaOdometry :
+  public MOOSPublisher {
 PUBLISHED:
   /** \name Constructors/destructor
     @{
     */
   /// Constructor
-  Laser(std::string name, NodePath& sensor, std::string msgName, std::string
-    laserName = "SICK_LMS_100", std::string configFile = "");
+  EuropaOdometry(std::string name, MOOSClient& client, std::string msgName);
   /// Destructor
-  virtual ~Laser();
+  virtual ~EuropaOdometry();
   /** @}
     */
 
-  /** \name Methods
+  /** \name Published methods
     @{
     */
   /// Update method called by simulator
-  virtual void publish(double time);
+  virtual void publish(double time, const LVecBase3f& pose, const
+    LVecBase2f& velocity);
   /** @}
     */
 
-public:
-
-protected:
+  protected:
   /** \name Protected members
     @{
     */
-  /// Morsel range sensor
-  RangeSensor& mSensor;
-  /// Laser name
-  std::string mLaserName;
+  /// Message name
+  std::string mMsgName;
   /** @}
     */
-
 };
 
-#endif // LASER_H
+#endif // EUROPA_ODOMETRY_H

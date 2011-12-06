@@ -17,21 +17,25 @@
 ################################################################################
 
 from morsel.nodes import Input
-from morsel_europa.morsel_europac import VelocityCommand as CVelocityCommand
+from morsel_europa.europac import EuropaVelocityCommand as \
+  CEuropaVelocityCommand
 
 #-------------------------------------------------------------------------------
 
-class VelocityCommand(Input):
-  def __init__(self, world, name, actuator = None, platform = None, **kargs):
+class EuropaVelocityCommand(Input):
+  def __init__(self, world, client, name = None, message = "VELOCITY_COMMAND",
+      actuator = None, platform = None, **kargs):
+    if not name:
+      name = message
     if platform:
       actuator = platform.actuator
 
-    Input.__init__(self, world, name, actuator, **kargs)
+    Input.__init__(self, world, name = message, **kargs)
 
-    self.input = CVelocityCommand(name, actuator)
-    self.input.reparentTo(self)
+    self.client = client
+    self.actuator = actuator
+    self.message = message
 
-#-------------------------------------------------------------------------------
-
-  def inputData(self, period):
-    self.input.receive(self.world.time)
+    self.receiver = CEuropaVelocityCommand(name, self.client.client,
+      self.actuator, self.message)
+    self.receiver.reparentTo(self)

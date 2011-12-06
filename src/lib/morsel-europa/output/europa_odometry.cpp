@@ -16,58 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "laser.h"
+#include "europa_odometry.h"
 
-#include <stdexcept>
+#include <moosMessages/odomMsg.h>
 
-#include <morsel/sensors/range_sensor.h>
-
-#include <MOOSLIB/MOOSCommClient.h>
-
-#include <moosMessages/laserMsg.h>
+#include <py_panda.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-Laser::Laser(std::string name, NodePath& sensor, std::string msgName,
-  std::string laserName, std::string configFile) :
-  Publisher(name, msgName, configFile),
-  mSensor(static_cast<RangeSensor&>(sensor)),
-  mLaserName(laserName) {
+EuropaOdometry::EuropaOdometry(std::string name, MOOSClient& client,
+    std::string msgName) :
+  MOOSPublisher(name, client),
+  mMsgName(msgName.empty() ? MsgTraits<OdomMsg>::name() : msgName) {
 }
 
-Laser::~Laser() {
+EuropaOdometry::~EuropaOdometry() {
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-void Laser::publish(double time) {
-  const LVecBase2f& resolution = mSensor.getResolution();
-  const LVecBase2f& rangeLimits = mSensor.getRangeLimits();
-  const LVecBase2f& minAngles = mSensor.getMinAngles();
-  const LVecBase2f& maxAngles = mSensor.getMaxAngles();
-  static size_t counter = 0;
-  LaserMsg msg;
-  msg.type = mLaserName;
-  msg.timestamp = MOOSTime();
-  msg.resolution = resolution[0] * 180.0 / M_PI;
-  msg.minAngle = (minAngles[0] + 0.5 * resolution[0]) * 180.0 / M_PI;
-  msg.maxAngle = (maxAngles[0] - 0.5 * resolution[0]) * 180.0 / M_PI;
-  msg.offset = 0.0;
-  msg.maxRange = rangeLimits[1];
-  msg.id = counter;
-  msg.count = counter++;
-  for (size_t i = 0; i < mSensor.getNumRays(); ++i) {
-    RangeSensor::Ray ray = mSensor.getRay(i);
-    if (ray.valid)
-      msg.range.push_back(std::sqrt(ray.point[0] * ray.point[0] +
-        ray.point[1] * ray.point[1] + ray.point[2] * ray.point[2]));
-    else
-      msg.range.push_back(-1);
-  }
-  if (!publishString(msg.toString()))
-    std::cerr << "Laser::publish(): failed to publish on MOOS" << std::endl;
+void EuropaOdometry::publish(double time, const LVecBase3f& pose, const
+    LVecBase2f& velocity) {
+  OdomMsg msg;
+  msg.pose[0] = pose[0];
+  msg.pose[1] = pose[1];
+  msg.pose[2] = pose[2] * M_PI / 180.0;
+  msg.velocity[0] = velocity[0];
+  msg.velocity[1] = 0.0;
+  msg.velocity[2] = velocity[1] * M_PI / 180.0;
+  msg.timestamp = mClient->getTime();
+
+  MOOSPublisher::publish(mMsgName, msg.toString());
 }

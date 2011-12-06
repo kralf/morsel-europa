@@ -16,55 +16,55 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#ifndef VELOCITY_COMMAND_H
-#define VELOCITY_COMMAND_H
+#ifndef EUROPA_VELOCITY_COMMAND_H
+#define EUROPA_VELOCITY_COMMAND_H
 
-/** \file velocity_command.h
-    \brief This file defines the VelocityCommand class which is an interface for
-           receiving velocity commands from MOOS.
+/** \file europa_velocity_command.h
+    \brief This file defines the EuropaVelocityCommand class which is an
+           interface for receiving Europa velocity commands from MOOS.
   */
 
-#include <morsel-moos/input/receiver.h>
+#include <morsel-moos/input/moos_receiver.h>
 
-class CMOOSMsg;
-
-/** The VelocityCommand class is an interface for receiving velocity commands
-    from MOOS.
-    \brief Velocity commands receiver
+/** The EuropaVelocityCommand class is an interface for receiving Europa
+    velocity commands from MOOS.
+    \brief Europa velocity commands receiver
   */
-class VelocityCommand :
-  public Receiver {
+class EuropaVelocityCommand :
+  public MOOSReceiver {
 PUBLISHED:
   /** \name Constructors/destructor
     @{
     */
   /// Constructor
-  VelocityCommand(std::string name, PyObject* actuator, std::string
-    configFile = "");
+  EuropaVelocityCommand(std::string name,  MOOSClient& client, PyObject*
+    actuator, std::string msgName = "");
   /// Destructor
-  virtual ~VelocityCommand();
+  virtual ~EuropaVelocityCommand();
   /** @}
     */
 
 public:
-
-protected:
-  /** \name Protected methods
+  /** \name Public methods
     @{
     */
   /// Handle the received MOOS message
-  virtual void receive(double time, const CMOOSMsg& msg);
+  virtual void receive(const std::string& msgName, double msgTime,
+    const std::string& msg);
   /** @}
     */
-
+  
+protected:
   /** \name Protected members
     @{
     */
   /// Morsel actuator
   PyObject* mActuator;
+  /// Message name
+  std::string mMsgName;
   /** @}
     */
 
 };
 
-#endif // VELOCITY_COMMAND_H
+#endif // EUROPA_VELOCITY_COMMAND_H

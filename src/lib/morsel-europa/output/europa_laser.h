@@ -16,49 +16,57 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "imu.h"
+#ifndef EUROPA_LASER_H
+#define EUROPA_LASER_H
 
-#include <stdexcept>
+/** \file europa_laser.h
+    \brief This file defines the EuropaLaser class which is an interface for
+           publishing Europa laser messages through MOOS.
+  */
 
-#include <MOOSLIB/MOOSCommClient.h>
+#include <morsel-moos/output/moos_publisher.h>
 
-#include <moosMessages/imuMsg.h>
+class RangeSensor;
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+/** The EuropaLaser class is an interface for publishing Europa laser messages
+    through MOOS.
+    \brief Europa laser messages publisher
+  */
+class EuropaLaser :
+  public MOOSPublisher {
+PUBLISHED:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Constructor
+  EuropaLaser(std::string name, MOOSClient& client, NodePath& sensor,
+    std::string msgName, std::string laserName = "SICK_LMS_100");
+  /// Destructor
+  virtual ~EuropaLaser();
+  /** @}
+    */
 
-IMU::IMU(std::string name, PyObject* actuator,
-  std::string configFile) :
-  Publisher(name, MsgTraits<ImuMsg>::name(), configFile),
-  mActuator(actuator) {
-  Py_XINCREF(mActuator);
-}
+  /** \name Published methods
+    @{
+    */
+  /// Update method called by simulator
+  virtual void publish(double time);
+  /** @}
+    */
 
-IMU::~IMU() {
-  Py_XDECREF(mActuator);
-}
+protected:
+  /** \name Protected members
+    @{
+    */
+  /// Morsel range sensor
+  RangeSensor& mSensor;
+  /// Message name
+  std::string mMsgName;
+  /// Laser name
+  std::string mLaserName;
+  /** @}
+    */
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+};
 
-void IMU::publish(double time) {
-  ImuMsg msg;
-  msg.quat[0] = 0;
-  msg.quat[1] = 0;
-  msg.quat[2] = 0;
-  msg.quat[3] = 0;
-  msg.acc[0] = 0;
-  msg.acc[1] = 0;
-  msg.acc[2] = 0;
-  msg.gyro[0] = 0;
-  msg.gyro[1] = 0;
-  msg.gyro[2] = 0;
-  msg.mag[0] = 0;
-  msg.mag[1] = 0;
-  msg.mag[2] = 0;
-  msg.timestamp = MOOSTime();
-  if (!publishString(msg.toString()))
-    std::cerr << "IMU::publish(): failed to publish on MOOS" << std::endl;
-}
+#endif // EUROPA_LASER_H
