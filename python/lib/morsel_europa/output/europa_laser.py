@@ -22,7 +22,8 @@ from morsel_europa.europac import EuropaLaser as CEuropaLaser
 #-------------------------------------------------------------------------------
 
 class EuropaLaser(Output):
-  def __init__(self, world, client, message, sensor, name = None, **kargs):
+  def __init__(self, world, client, message, sensor, name = None,
+      flip = False, **kargs):
     if not name:
       name = message
         
@@ -31,6 +32,7 @@ class EuropaLaser(Output):
     self.client = client
     self.sensor = sensor
     self.message = message
+    self.flip = flip
 
     self.publisher = CEuropaLaser(name, self.client.client,
       self.sensor.sensor, self.message)
@@ -39,4 +41,4 @@ class EuropaLaser(Output):
 #-------------------------------------------------------------------------------
 
   def outputData(self, time):
-    self.publisher.publish(time)
+    self.publisher.publish(time, self.flip)

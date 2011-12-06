@@ -41,7 +41,7 @@ EuropaLaser::~EuropaLaser() {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void EuropaLaser::publish(double time) {
+void EuropaLaser::publish(double time, bool flip) {
   const LVecBase2f& resolution = mSensor.getResolution();
   const LVecBase2f& rangeLimits = mSensor.getRangeLimits();
   const LVecBase2f& minAngles = mSensor.getMinAngles();
@@ -66,6 +66,8 @@ void EuropaLaser::publish(double time) {
     else
       msg.range.push_back(-1);
   }
+  if (flip)
+    reverse(msg.range.begin(), msg.range.end());
 
   MOOSPublisher::publish(mMsgName, msg.toString());
 }

@@ -50,7 +50,7 @@ PUBLISHED:
     @{
     */
   /// Update method called by simulator
-  virtual void publish(double time);
+  virtual void publish(double time, bool flip);
   /** @}
     */
 
