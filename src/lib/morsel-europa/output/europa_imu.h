@@ -47,8 +47,8 @@ PUBLISHED:
     @{
     */
   /// Update method called by simulator
-  void publish(double time, const LVecBase3f& orientation, const
-    LVecBase3f& acceleration);
+  void publish(double time, double timestamp, const LVecBase3f& orientation,
+    const LVecBase3f& acceleration);
   /** @}
     */
 

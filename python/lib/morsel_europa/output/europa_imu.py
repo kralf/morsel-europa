@@ -39,5 +39,6 @@ class EuropaIMU(Output):
 #-------------------------------------------------------------------------------
 
   def outputData(self, time):
-    self.publisher.publish(time, panda.Vec3(*self.sensor.globalOrientation),
+    self.publisher.publish(time, self.sensor.timestamp,
+      panda.Vec3(*self.sensor.globalOrientation),
       panda.Vec3(*self.sensor.translationalAcceleration))

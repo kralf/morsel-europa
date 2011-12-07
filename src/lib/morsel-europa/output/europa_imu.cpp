@@ -37,8 +37,8 @@ EuropaIMU::~EuropaIMU() {
 /* Methods                                                                    */
 /******************************************************************************/
 
-void EuropaIMU::publish(double time, const LVecBase3f& orientation,
-    const LVecBase3f& acceleration) {
+void EuropaIMU::publish(double time, double timestamp, const LVecBase3f&
+    orientation, const LVecBase3f& acceleration) {
   LQuaternionf quaternion;
   quaternion.set_hpr(orientation);
   
@@ -56,7 +56,7 @@ void EuropaIMU::publish(double time, const LVecBase3f& orientation,
   msg.mag[0] = 0.0;
   msg.mag[1] = 0.0;
   msg.mag[2] = 0.0;
-  msg.timestamp = mClient->getTime(time);
+  msg.timestamp = mClient->getTime(timestamp);
   
   MOOSPublisher::publish(mMsgName, msg.toString());
 }
