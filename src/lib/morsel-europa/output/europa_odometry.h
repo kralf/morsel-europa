@@ -37,7 +37,8 @@ PUBLISHED:
     @{
     */
   /// Constructor
-  EuropaOdometry(std::string name, MOOSClient& client, std::string msgName);
+  EuropaOdometry(std::string name, MOOSClient& client, std::string
+    msgName = "");
   /// Destructor
   virtual ~EuropaOdometry();
   /** @}
@@ -47,8 +48,8 @@ PUBLISHED:
     @{
     */
   /// Update method called by simulator
-  virtual void publish(double time, const LVecBase3f& pose, const
-    LVecBase2f& velocity);
+  virtual void publish(double time, double timestamp, const LVecBase3f&
+    pose, const LVecBase2f& velocity);
   /** @}
     */
 

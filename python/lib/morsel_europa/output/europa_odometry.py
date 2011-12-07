@@ -22,11 +22,8 @@ from morsel_europa.europac import EuropaOdometry as CEuropaOdometry
 #-------------------------------------------------------------------------------
 
 class EuropaOdometry(Output):
-  def __init__(self, world, client, platform, name = None,
-      message = "ODOMETRY_POSE", **kargs):
-    if not name:
-      name = message
-      
+  def __init__(self, world, client, platform, name = "Odometry", message = "",
+      **kargs):
     Output.__init__(self, world, name, **kargs)
 
     self.client = client
@@ -36,16 +33,16 @@ class EuropaOdometry(Output):
     self.publisher = CEuropaOdometry(name, self.client.client, self.message)
     self.publisher.reparentTo(self)
 
-    self.origin = Node(world, name+"Origin", parent = self);
+    self.origin = Node(world, name+"Origin", parent = self)
     self.origin.clearTransform(self.platform)
 
 #-------------------------------------------------------------------------------
 
   def outputData(self, time):
-    position = self.platform.getPosition(self.origin);
-    orientation = self.platform.getOrientation(self.origin);
+    position = self.platform.getPosition(self.origin)
+    orientation = self.platform.getOrientation(self.origin)
 
     pose = panda.Vec3(position[0], position[1], orientation[0])
     velocity = panda.Vec2(*self.platform.chassis.state)
     
-    self.publisher.publish(time, pose, velocity)
+    self.publisher.publish(time, framework.scheduler.frameTime, pose, velocity)

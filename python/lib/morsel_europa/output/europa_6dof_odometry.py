@@ -16,26 +16,32 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.         #
 ################################################################################
 
-from morsel.nodes import Output
-from morsel_europa.europac import EuropaIMU as CEuropaIMU
+from morsel.nodes import Output, Node
+from morsel_europa.europac import Europa6DOFOdometry as CEuropa6DOFOdometry
 
 #-------------------------------------------------------------------------------
 
-class EuropaIMU(Output):
-  def __init__(self, world, client, sensor, name = "IMU", message = "",
-      **kargs):
+class Europa6DOFOdometry(Output):
+  def __init__(self, world, client, platform, name = "6DOFOdometry",
+      message = "", **kargs):
     Output.__init__(self, world, name, **kargs)
 
     self.client = client
-    self.sensor = sensor
+    self.platform = platform
     self.message = message
 
-    self.publisher = CEuropaIMU(name, self.client.client, self.message)
+    self.publisher = CEuropa6DOFOdometry(name, self.client.client,
+      self.message)
     self.publisher.reparentTo(self)
+
+    self.origin = Node(world, name+"Origin", parent = self)
+    self.origin.clearTransform(self.platform)
 
 #-------------------------------------------------------------------------------
 
   def outputData(self, time):
-    self.publisher.publish(time, self.sensor.timestamp,
-      panda.Vec3(*self.sensor.globalOrientation),
-      panda.Vec3(*self.sensor.translationalAcceleration))
+    position = self.platform.getPosition(self.origin)
+    orientation = self.platform.getOrientation(self.origin)
+
+    self.publisher.publish(time, framework.scheduler.frameTime,
+      panda.Vec3(*position), panda.Vec3(*orientation))

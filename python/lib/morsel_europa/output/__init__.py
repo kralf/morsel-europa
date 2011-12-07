@@ -21,5 +21,6 @@
 #===============================================================================
 
 from europa_odometry import EuropaOdometry
-from europa_laser import EuropaLaser
 from europa_imu import EuropaIMU
+from europa_6dof_odometry import Europa6DOFOdometry
+from europa_laser import EuropaLaser

@@ -16,36 +16,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "europa_odometry.h"
+#include "europa_6dof_odometry.h"
 
-#include <moosMessages/odomMsg.h>
+#include <moosMessages/sixdOdomMsg.h>
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
 /******************************************************************************/
 
-EuropaOdometry::EuropaOdometry(std::string name, MOOSClient& client,
+Europa6DOFOdometry::Europa6DOFOdometry(std::string name, MOOSClient& client,
     std::string msgName) :
   MOOSPublisher(name, client),
-  mMsgName(msgName.empty() ? MsgTraits<OdomMsg>::name() : msgName) {
+  mMsgName(msgName.empty() ? MsgTraits<SixDOdomMsg>::name() : msgName) {
 }
 
-EuropaOdometry::~EuropaOdometry() {
+Europa6DOFOdometry::~Europa6DOFOdometry() {
 }
 
 /******************************************************************************/
 /* Methods                                                                    */
 /******************************************************************************/
 
-void EuropaOdometry::publish(double time, double timestamp, const LVecBase3f&
-    pose, const LVecBase2f& velocity) {
-  OdomMsg msg;
-  msg.pose[0] = pose[0];
-  msg.pose[1] = pose[1];
-  msg.pose[2] = pose[2] * M_PI / 180.0;
-  msg.velocity[0] = velocity[0];
-  msg.velocity[1] = 0.0;
-  msg.velocity[2] = velocity[1] * M_PI / 180.0;
+void Europa6DOFOdometry::publish(double time, double timestamp, const
+    LVecBase3f& position, const LVecBase3f& orientation) {
+  LQuaternionf quaternion;
+  quaternion.set_hpr(orientation);
+  
+  SixDOdomMsg msg;
+  msg.pos[0] = position[0];
+  msg.pos[1] = position[1];
+  msg.pos[2] = position[2];
+  msg.rot[0] = quaternion.get_i();
+  msg.rot[1] = quaternion.get_j();
+  msg.rot[2] = quaternion.get_k();
+  msg.rot[3] = quaternion.get_r();
   msg.timestamp = mClient->getTime(timestamp);
 
   MOOSPublisher::publish(mMsgName, msg.toString());

@@ -25,7 +25,7 @@ class EuropaLaser(Output):
   def __init__(self, world, client, message, sensor, name = None,
       flip = False, **kargs):
     if not name:
-      name = message
+      name = "Laser_"+message
         
     Output.__init__(self, world, name, **kargs)
 

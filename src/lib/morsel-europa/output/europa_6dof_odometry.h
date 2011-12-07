@@ -16,37 +16,52 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "europa_odometry.h"
+#ifndef EUROPA_6DOF_ODOMETRY_H
+#define EUROPA_6DOF_ODOMETRY_H
 
-#include <moosMessages/odomMsg.h>
+/** \file europa_6dof_odometry.h
+    \brief This file defines the Europa6DOFOdometry class which is an
+           interface for publishing Europa 6DOF odometry messages through
+           MOOS.
+  */
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+#include <morsel-moos/output/moos_publisher.h>
 
-EuropaOdometry::EuropaOdometry(std::string name, MOOSClient& client,
-    std::string msgName) :
-  MOOSPublisher(name, client),
-  mMsgName(msgName.empty() ? MsgTraits<OdomMsg>::name() : msgName) {
-}
+/** The Europa6DOFOdometry class is an interface for publishing Europa
+    6DOF odometry messages through MOOS.
+    \brief Europa 6DOF odometry messages publisher
+  */
+class Europa6DOFOdometry :
+  public MOOSPublisher {
+PUBLISHED:
+  /** \name Constructors/destructor
+    @{
+    */
+  /// Constructor
+  Europa6DOFOdometry(std::string name, MOOSClient& client, std::string
+    msgName = "");
+  /// Destructor
+  virtual ~Europa6DOFOdometry();
+  /** @}
+    */
 
-EuropaOdometry::~EuropaOdometry() {
-}
+  /** \name Published methods
+    @{
+    */
+  /// Update method called by simulator
+  virtual void publish(double time, double timestamp, const LVecBase3f&
+    position, const LVecBase3f& orientation);
+  /** @}
+    */
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
+  protected:
+  /** \name Protected members
+    @{
+    */
+  /// Message name
+  std::string mMsgName;
+  /** @}
+    */
+};
 
-void EuropaOdometry::publish(double time, double timestamp, const LVecBase3f&
-    pose, const LVecBase2f& velocity) {
-  OdomMsg msg;
-  msg.pose[0] = pose[0];
-  msg.pose[1] = pose[1];
-  msg.pose[2] = pose[2] * M_PI / 180.0;
-  msg.velocity[0] = velocity[0];
-  msg.velocity[1] = 0.0;
-  msg.velocity[2] = velocity[1] * M_PI / 180.0;
-  msg.timestamp = mClient->getTime(timestamp);
-
-  MOOSPublisher::publish(mMsgName, msg.toString());
-}
+#endif // EUROPA_6DOF_ODOMETRY_H
