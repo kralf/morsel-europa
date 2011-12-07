@@ -25,9 +25,9 @@
 /******************************************************************************/
 
 EuropaVelocityCommand::EuropaVelocityCommand(std::string name, MOOSClient&
-    client, PyObject* actuator, std::string msgName) :
+  client, PyObject* actuator, std::string msgName) :
   MOOSReceiver(name, client,
-      msgName.empty() ? MsgTraits<VelocityCommandMsg>::name() : msgName),
+    msgName.empty() ? MsgTraits<VelocityCommandMsg>::name() : msgName),
   mActuator(actuator),
   mMsgName(msgName.empty() ? MsgTraits<VelocityCommandMsg>::name() : msgName) {
   Py_XINCREF(mActuator);
@@ -42,7 +42,7 @@ EuropaVelocityCommand::~EuropaVelocityCommand() {
 /******************************************************************************/
 
 void EuropaVelocityCommand::receive(const std::string& msgName, double msgTime,
-    const std::string& msg) {
+  const std::string& msg) {
   if (msgName == mMsgName) {
     VelocityCommandMsg vMsg;
     vMsg.fromString(msg);

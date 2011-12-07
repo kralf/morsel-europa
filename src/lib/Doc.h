@@ -16,37 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
  ******************************************************************************/
 
-#include "europa_odometry.h"
+/** \file Doc.h
+    \brief Contains main page for Doxygen documentation
+  */
 
-#include <moosMessages/odomMsg.h>
+/** \mainpage Reference manual for morsel-europa - A free/open source C++ library for using EUROPA within Morsel
+    \author Jerome Maye <jerome.maye@gmail.com>
+    \version 1.0.1305
+    \date December 7, 2011
+  */
 
-/******************************************************************************/
-/* Constructors and Destructor                                                */
-/******************************************************************************/
+/** \page license License
+    <hr size="1">
+    \section license-license License
 
-EuropaOdometry::EuropaOdometry(std::string name, MOOSClient& client,
-  std::string msgName) :
-  MOOSPublisher(name, client),
-  mMsgName(msgName.empty() ? MsgTraits<OdomMsg>::name() : msgName) {
-}
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the Lesser GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
 
-EuropaOdometry::~EuropaOdometry() {
-}
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    Lesser GNU General Public License for more details.
 
-/******************************************************************************/
-/* Methods                                                                    */
-/******************************************************************************/
-
-void EuropaOdometry::publish(double time, double timestamp, const LVecBase3f&
-  pose, const LVecBase2f& velocity) {
-  OdomMsg msg;
-  msg.pose[0] = pose[0];
-  msg.pose[1] = pose[1];
-  msg.pose[2] = pose[2] * M_PI / 180.0;
-  msg.velocity[0] = velocity[0];
-  msg.velocity[1] = 0.0;
-  msg.velocity[2] = velocity[1] * M_PI / 180.0;
-  msg.timestamp = mClient->getTime(timestamp);
-
-  MOOSPublisher::publish(mMsgName, msg.toString());
-}
+    You should have received a copy of the Lesser GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  */

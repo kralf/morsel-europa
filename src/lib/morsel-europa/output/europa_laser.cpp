@@ -27,7 +27,7 @@
 /******************************************************************************/
 
 EuropaLaser::EuropaLaser(std::string name, MOOSClient& client, NodePath&
-    sensor, std::string msgName, std::string laserName) :
+  sensor, std::string msgName, std::string laserName) :
   MOOSPublisher(name, client),
   mSensor(static_cast<RangeSensor&>(sensor)),
   mMsgName(msgName),

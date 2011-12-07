@@ -5,8 +5,8 @@ include(Panda3D)
 
 remake_project(
   morsel-europa
-  VERSION 0.1
-  RELEASE alpha
+  VERSION 1.0
+  RELEASE beta
   SUMMARY "Morsel EUROPA interface"
   AUTHOR "Jerome Maye"
   CONTACT "jerome.maye@mavt.ethz.ch"
@@ -38,4 +38,10 @@ remake_doc(
 remake_pack_deb(
   COMPONENT python
   morsel-europa morsel-python
+)
+
+remake_pack_deb(
+  COMPONENT doc
+  DESCRIPTION "Documentation"
+  morsel-europa
 )

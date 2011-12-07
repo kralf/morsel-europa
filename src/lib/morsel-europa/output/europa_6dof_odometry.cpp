@@ -25,7 +25,7 @@
 /******************************************************************************/
 
 Europa6DOFOdometry::Europa6DOFOdometry(std::string name, MOOSClient& client,
-    std::string msgName) :
+  std::string msgName) :
   MOOSPublisher(name, client),
   mMsgName(msgName.empty() ? MsgTraits<SixDOdomMsg>::name() : msgName) {
 }
@@ -38,7 +38,7 @@ Europa6DOFOdometry::~Europa6DOFOdometry() {
 /******************************************************************************/
 
 void Europa6DOFOdometry::publish(double time, double timestamp, const
-    LVecBase3f& position, const LVecBase3f& orientation) {
+  LVecBase3f& position, const LVecBase3f& orientation) {
   LQuaternionf quaternion;
   quaternion.set_hpr(orientation);
   
