@@ -50,7 +50,7 @@ PUBLISHED:
     */
   /// Update method called by simulator
   virtual void publish(double time, double timestamp, const LVecBase3f&
-    position, const LVecBase3f& orientation);
+     position, const LVecBase3f& orientation);
   /** @}
     */
 

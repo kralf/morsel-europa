@@ -25,7 +25,7 @@
 /******************************************************************************/
 
 EuropaOdometry::EuropaOdometry(std::string name, MOOSClient& client,
-  std::string msgName) :
+    std::string msgName) :
   MOOSPublisher(name, client),
   mMsgName(msgName.empty() ? MsgTraits<OdomMsg>::name() : msgName) {
 }
@@ -38,7 +38,7 @@ EuropaOdometry::~EuropaOdometry() {
 /******************************************************************************/
 
 void EuropaOdometry::publish(double time, double timestamp, const LVecBase3f&
-  pose, const LVecBase2f& velocity) {
+    pose, const LVecBase2f& velocity) {
   OdomMsg msg;
   msg.pose[0] = pose[0];
   msg.pose[1] = pose[1];

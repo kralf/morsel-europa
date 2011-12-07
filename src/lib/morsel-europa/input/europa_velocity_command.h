@@ -49,8 +49,8 @@ public:
     @{
     */
   /// Handle the received MOOS message
-  virtual void receive(const std::string& msgName, double msgTime,
-    const std::string& msg);
+  virtual void receive(const std::string& msgName, double msgTime, const
+    std::string& msg);
   /** @}
     */
 

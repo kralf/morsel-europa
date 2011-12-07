@@ -48,8 +48,8 @@ PUBLISHED:
     @{
     */
   /// Update method called by simulator
-  virtual void publish(double time, double timestamp, const LVecBase3f&
-    pose, const LVecBase2f& velocity);
+  virtual void publish(double time, double timestamp, const LVecBase3f& pose,
+    const LVecBase2f& velocity);
   /** @}
     */
 

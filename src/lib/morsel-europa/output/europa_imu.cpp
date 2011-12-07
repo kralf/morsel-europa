@@ -25,7 +25,7 @@
 /******************************************************************************/
 
 EuropaIMU::EuropaIMU(std::string name, MOOSClient& client, std::string
-  msgName) :
+    msgName) :
   MOOSPublisher(name, client),
   mMsgName(msgName.empty() ? MsgTraits<ImuMsg>::name() : msgName) {
 }
@@ -38,7 +38,7 @@ EuropaIMU::~EuropaIMU() {
 /******************************************************************************/
 
 void EuropaIMU::publish(double time, double timestamp, const LVecBase3f&
-  orientation, const LVecBase3f& acceleration) {
+    orientation, const LVecBase3f& acceleration) {
   LQuaternionf quaternion;
   quaternion.set_hpr(orientation);
 
