@@ -56,7 +56,7 @@ void EuropaIMU::publish(double time, const LVecBase3f& orientation,
   msg.mag[0] = 0.0;
   msg.mag[1] = 0.0;
   msg.mag[2] = 0.0;
-  msg.timestamp = mClient->getTime();
+  msg.timestamp = mClient->getTime(time);
   
   MOOSPublisher::publish(mMsgName, msg.toString());
 }

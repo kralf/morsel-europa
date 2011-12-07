@@ -48,7 +48,7 @@ void EuropaOdometry::publish(double time, const LVecBase3f& pose, const
   msg.velocity[0] = velocity[0];
   msg.velocity[1] = 0.0;
   msg.velocity[2] = velocity[1] * M_PI / 180.0;
-  msg.timestamp = mClient->getTime();
+  msg.timestamp = mClient->getTime(time);
 
   MOOSPublisher::publish(mMsgName, msg.toString());
 }

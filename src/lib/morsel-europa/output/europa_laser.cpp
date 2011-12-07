@@ -50,7 +50,7 @@ void EuropaLaser::publish(double time, bool flip) {
 
   LaserMsg msg;
   msg.type = mLaserName;
-  msg.timestamp = mClient->getTime();
+  msg.timestamp = mClient->getTime(mSensor.getTimestamp());
   msg.resolution = resolution[0] * 180.0 / M_PI;
   msg.minAngle = (minAngles[0] + 0.5 * resolution[0]) * 180.0 / M_PI;
   msg.maxAngle = (maxAngles[0] - 0.5 * resolution[0]) * 180.0 / M_PI;
