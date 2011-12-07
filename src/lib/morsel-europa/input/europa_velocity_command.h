@@ -53,7 +53,7 @@ public:
     const std::string& msg);
   /** @}
     */
-  
+
 protected:
   /** \name Protected members
     @{
