@@ -23,12 +23,12 @@ from morsel_europa.europac import EuropaVelocityCommand as \
 #-------------------------------------------------------------------------------
 
 class EuropaVelocityCommand(Input):
-  def __init__(self, world, client, name = "VelocityCommand", message = "",
+  def __init__(self, client, name = "VelocityCommand", message = "",
       actuator = None, platform = None, **kargs):
     if platform:
       actuator = platform.actuator
 
-    Input.__init__(self, world, name = message, **kargs)
+    Input.__init__(self, name = message, **kargs)
 
     self.client = client
     self.actuator = actuator

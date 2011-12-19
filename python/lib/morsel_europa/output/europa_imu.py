@@ -22,9 +22,8 @@ from morsel_europa.europac import EuropaIMU as CEuropaIMU
 #-------------------------------------------------------------------------------
 
 class EuropaIMU(Output):
-  def __init__(self, world, client, sensor, name = "IMU", message = "",
-      **kargs):
-    Output.__init__(self, world, name, **kargs)
+  def __init__(self, client, sensor, name = "IMU", message = "", **kargs):
+    Output.__init__(self, name, **kargs)
 
     self.client = client
     self.sensor = sensor

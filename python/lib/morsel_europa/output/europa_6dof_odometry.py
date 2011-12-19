@@ -22,9 +22,9 @@ from morsel_europa.europac import Europa6DOFOdometry as CEuropa6DOFOdometry
 #-------------------------------------------------------------------------------
 
 class Europa6DOFOdometry(Output):
-  def __init__(self, world, client, platform, name = "6DOFOdometry",
-      message = "", **kargs):
-    Output.__init__(self, world, name, **kargs)
+  def __init__(self, client, platform, name = "6DOFOdometry", message = "",
+      **kargs):
+    Output.__init__(self, name, **kargs)
 
     self.client = client
     self.platform = platform
@@ -34,7 +34,7 @@ class Europa6DOFOdometry(Output):
       self.message)
     self.publisher.reparentTo(self)
 
-    self.origin = Node(world, name+"Origin", parent = self)
+    self.origin = Node(name+"Origin", parent = self)
     self.origin.clearTransform(self.platform)
 
 #-------------------------------------------------------------------------------

@@ -22,12 +22,12 @@ from morsel_europa.europac import EuropaLaser as CEuropaLaser
 #-------------------------------------------------------------------------------
 
 class EuropaLaser(Output):
-  def __init__(self, world, client, message, sensor, name = None,
-      flip = False, **kargs):
+  def __init__(self, client, message, sensor, name = None, flip = False,
+      **kargs):
     if not name:
       name = "Laser_"+message
         
-    Output.__init__(self, world, name, **kargs)
+    Output.__init__(self, name, **kargs)
 
     self.client = client
     self.sensor = sensor

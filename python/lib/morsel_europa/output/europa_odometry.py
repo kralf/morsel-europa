@@ -22,9 +22,9 @@ from morsel_europa.europac import EuropaOdometry as CEuropaOdometry
 #-------------------------------------------------------------------------------
 
 class EuropaOdometry(Output):
-  def __init__(self, world, client, platform, name = "Odometry", message = "",
+  def __init__(self, client, platform, name = "Odometry", message = "",
       **kargs):
-    Output.__init__(self, world, name, **kargs)
+    Output.__init__(self, name, **kargs)
 
     self.client = client
     self.platform = platform
@@ -33,7 +33,7 @@ class EuropaOdometry(Output):
     self.publisher = CEuropaOdometry(name, self.client.client, self.message)
     self.publisher.reparentTo(self)
 
-    self.origin = Node(world, name+"Origin", parent = self)
+    self.origin = Node(name+"Origin", parent = self)
     self.origin.clearTransform(self.platform)
 
 #-------------------------------------------------------------------------------
