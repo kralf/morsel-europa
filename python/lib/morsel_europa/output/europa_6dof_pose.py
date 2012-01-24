@@ -37,8 +37,8 @@ class Europa6DOFPose(Output):
 #-------------------------------------------------------------------------------
 
   def outputData(self, time):
-    position = self.platform.getPosition(self.world)
-    orientation = self.platform.getOrientation(self.world)
+    position = self.platform.getPosition(framework.world)
+    orientation = self.platform.getOrientation(framework.world)
 
     self.publisher.publish(time, framework.scheduler.frameTime,
       panda.Vec3(*position), panda.Vec3(*orientation))
