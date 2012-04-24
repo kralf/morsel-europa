@@ -16,13 +16,23 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.         #
 ################################################################################
 
-#===============================================================================
-# Submodules
-#===============================================================================
+from morsel.nodes import Output, Node
+from morsel_europa.europac import EuropaCapture as CEuropaCapture
 
-from europa_odometry import EuropaOdometry
-from europa_imu import EuropaIMU
-from europa_6dof_odometry import Europa6DOFOdometry
-from europa_6dof_pose import Europa6DOFPose
-from europa_laser import EuropaLaser
-from europa_capture import EuropaCapture
+#-------------------------------------------------------------------------------
+
+class EuropaCapture(Output):
+  def __init__(self, client, name = "Capture", message = "", **kargs):
+    Output.__init__(self, name, **kargs)
+
+    self.client = client
+    self.message = message
+
+    self.publisher = CEuropaCapture(name, self.client.client, self.message)
+    self.publisher.reparentTo(self)
+
+#-------------------------------------------------------------------------------
+
+  def outputData(self, time):
+    self.publisher.publish(time, framework.scheduler.frameTime,
+      framework.window)
