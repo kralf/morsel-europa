@@ -18,7 +18,9 @@
 
 #include "europa_velocity_command.h"
 
+#ifdef HAVE_MOOS_MESSAGES
 #include <moosMessages/velocityCommandMsg.h>
+#endif
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -26,10 +28,18 @@
 
 EuropaVelocityCommand::EuropaVelocityCommand(std::string name, MOOSClient&
     client, PyObject* actuator, std::string msgName) :
+#ifdef HAVE_MOOS_MESSAGES
   MOOSReceiver(name, client,
     msgName.empty() ? MsgTraits<VelocityCommandMsg>::name() : msgName),
+#else
+  MOOSReceiver(name, client, msgName.empty() ? "VelocityCommand" : msgName),
+#endif
   mActuator(actuator),
+#ifdef HAVE_MOOS_MESSAGES
   mMsgName(msgName.empty() ? MsgTraits<VelocityCommandMsg>::name() : msgName) {
+#else
+  mMsgName(msgName.empty() ? "VelocityCommand" : msgName) {
+#endif
   Py_XINCREF(mActuator);
 }
 
@@ -44,6 +54,7 @@ EuropaVelocityCommand::~EuropaVelocityCommand() {
 void EuropaVelocityCommand::receive(const std::string& msgName, double msgTime,
     const std::string& msg) {
   if (msgName == mMsgName) {
+#ifdef HAVE_MOOS_MESSAGES
     VelocityCommandMsg vMsg;
     vMsg.fromString(msg);
 
@@ -60,6 +71,7 @@ void EuropaVelocityCommand::receive(const std::string& msgName, double msgTime,
 
     PyObject_SetAttrString(mActuator, "command", command);
     Py_XDECREF(command);
+#endif
   }
   else
     MOOSReceiver::receive(msgName, msgTime, msg);

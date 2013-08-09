@@ -20,7 +20,9 @@
 
 #include <morsel/sensors/range_sensor.h>
 
+#ifdef HAVE_MOOS_MESSAGES
 #include <moosMessages/laserMsg.h>
+#endif
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -42,6 +44,7 @@ EuropaLaser::~EuropaLaser() {
 /******************************************************************************/
 
 void EuropaLaser::publish(double time, bool flip) {
+#ifdef HAVE_MOOS_MESSAGES
   const LVecBase2f& resolution = mSensor.getResolution();
   const LVecBase2f& rangeLimits = mSensor.getRangeLimits();
   const LVecBase2f& minAngles = mSensor.getMinAngles();
@@ -70,4 +73,5 @@ void EuropaLaser::publish(double time, bool flip) {
     reverse(msg.range.begin(), msg.range.end());
 
   MOOSPublisher::publish(mMsgName, msg.toString());
+#endif
 }

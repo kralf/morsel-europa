@@ -1,9 +1,10 @@
 remake_find_package(panda3d CONFIG)
 remake_find_package(morsel-moos CONFIG)
 remake_find_package(PythonLibs)
-
 remake_find_library(europa_alu_moosMessages moosMessages/genericMessage.h
-  PACKAGE moosMessages)
+  PACKAGE moosMessages OPTIONAL)
+
+remake_define(HAVE_MOOS_MESSAGES ${MOOSMESSAGES_FOUND})
 
 remake_find_executable(panda3d-interrogate)
 remake_find_executable(panda3d-interrogate_module)

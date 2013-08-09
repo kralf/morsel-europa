@@ -18,7 +18,9 @@
 
 #include "europa_capture.h"
 
+#ifdef HAVE_MOOS_MESSAGES
 #include <moosMessages/compressedImageMsg.h>
+#endif
 
 #include <pnmImage.h>
 
@@ -29,7 +31,11 @@
 EuropaCapture::EuropaCapture(std::string name, MOOSClient& client, 
     std::string msgName) :
   MOOSPublisher(name, client),
+#ifdef HAVE_MOOS_MESSAGES
   mMsgName(msgName.empty() ? MsgTraits<CompressedImageMsg>::name() : msgName),
+#else
+  mMsgName(msgName.empty() ? "Capture" : msgName),
+#endif
   frameNumber(0) {
 }
 
@@ -45,6 +51,7 @@ void EuropaCapture::Deleter::operator()(void const*) const {
 
 void EuropaCapture::publish(double time, double timestamp, GraphicsWindow&
     window) {
+#ifdef HAVE_MOOS_MESSAGES
   CompressedImageMsg msg;
   CompressedImageMsg::CompressedImage img;
 
@@ -64,6 +71,7 @@ void EuropaCapture::publish(double time, double timestamp, GraphicsWindow&
   msg.compressedImages.push_back(img);
 
   MOOSPublisher::publish(mMsgName, msg.toString());
+#endif
 
   ++frameNumber;
 }

@@ -18,7 +18,9 @@
 
 #include "europa_odometry.h"
 
+#ifdef HAVE_MOOS_MESSAGES
 #include <moosMessages/odomMsg.h>
+#endif
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -27,7 +29,11 @@
 EuropaOdometry::EuropaOdometry(std::string name, MOOSClient& client,
     std::string msgName) :
   MOOSPublisher(name, client),
+#ifdef HAVE_MOOS_MESSAGES
   mMsgName(msgName.empty() ? MsgTraits<OdomMsg>::name() : msgName) {
+#else
+  mMsgName(msgName.empty() ? "Odometry" : msgName) {
+#endif
 }
 
 EuropaOdometry::~EuropaOdometry() {
@@ -39,6 +45,7 @@ EuropaOdometry::~EuropaOdometry() {
 
 void EuropaOdometry::publish(double time, double timestamp, const LVecBase3f&
     pose, const LVecBase2f& velocity) {
+#ifdef HAVE_MOOS_MESSAGES
   OdomMsg msg;
   msg.pose[0] = pose[0];
   msg.pose[1] = pose[1];
@@ -49,4 +56,5 @@ void EuropaOdometry::publish(double time, double timestamp, const LVecBase3f&
   msg.timestamp = mClient->getTime(timestamp);
 
   MOOSPublisher::publish(mMsgName, msg.toString());
+#endif
 }

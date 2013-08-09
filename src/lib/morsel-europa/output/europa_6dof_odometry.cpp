@@ -18,7 +18,9 @@
 
 #include "europa_6dof_odometry.h"
 
+#ifdef HAVE_MOOS_MESSAGES
 #include <moosMessages/sixdOdomMsg.h>
+#endif
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -27,7 +29,11 @@
 Europa6DOFOdometry::Europa6DOFOdometry(std::string name, MOOSClient& client,
     std::string msgName) :
   MOOSPublisher(name, client),
+#ifdef HAVE_MOOS_MESSAGES
   mMsgName(msgName.empty() ? MsgTraits<SixDOdomMsg>::name() : msgName) {
+#else
+  mMsgName(msgName.empty() ? "6DOFOdometry" : msgName) {
+#endif
 }
 
 Europa6DOFOdometry::~Europa6DOFOdometry() {
@@ -39,6 +45,7 @@ Europa6DOFOdometry::~Europa6DOFOdometry() {
 
 void Europa6DOFOdometry::publish(double time, double timestamp, const
     LVecBase3f& position, const LVecBase3f& orientation) {
+#ifdef HAVE_MOOS_MESSAGES
   LQuaternionf quaternion;
   quaternion.set_hpr(orientation);
   
@@ -53,4 +60,5 @@ void Europa6DOFOdometry::publish(double time, double timestamp, const
   msg.timestamp = mClient->getTime(timestamp);
 
   MOOSPublisher::publish(mMsgName, msg.toString());
+#endif
 }

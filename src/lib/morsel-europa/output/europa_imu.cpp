@@ -18,7 +18,9 @@
 
 #include "europa_imu.h"
 
+#ifdef HAVE_MOOS_MESSAGES
 #include <moosMessages/imuMsg.h>
+#endif
 
 /******************************************************************************/
 /* Constructors and Destructor                                                */
@@ -27,7 +29,11 @@
 EuropaIMU::EuropaIMU(std::string name, MOOSClient& client, std::string
     msgName) :
   MOOSPublisher(name, client),
+#ifdef HAVE_MOOS_MESSAGES
   mMsgName(msgName.empty() ? MsgTraits<ImuMsg>::name() : msgName) {
+#else
+  mMsgName(msgName.empty() ? "IMU" : msgName) {
+#endif
 }
 
 EuropaIMU::~EuropaIMU() {
@@ -39,6 +45,7 @@ EuropaIMU::~EuropaIMU() {
 
 void EuropaIMU::publish(double time, double timestamp, const LVecBase3f&
     orientation, const LVecBase3f& acceleration) {
+#ifdef HAVE_MOOS_MESSAGES
   LQuaternionf quaternion;
   quaternion.set_hpr(orientation);
 
@@ -59,4 +66,5 @@ void EuropaIMU::publish(double time, double timestamp, const LVecBase3f&
   msg.timestamp = mClient->getTime(timestamp);
 
   MOOSPublisher::publish(mMsgName, msg.toString());
+#endif
 }
