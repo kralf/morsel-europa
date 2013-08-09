@@ -4,7 +4,4 @@ panda3d_interrogate_module(
   MODULE morsel_europa
 )
 
-remake_add_library(
-  morsel_europac PREFIX panda3d- LINK input output
-    ${PANDA3D_MORSEL_MOOSC_LIBRARY}
-)
+remake_add_library(morsel_europac PREFIX panda3d- LINK input output)
