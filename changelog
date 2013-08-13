@@ -1,3 +1,9 @@
+morsel-europa (1.0-36) unstable; urgency=low
+
+  * Added Python configuration
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 13 Aug 2013 14:48:00 +0100
+
 morsel-europa (1.0-35) unstable; urgency=low
 
   * Fixed laser orientation in playground.conf (switching pitch and roll)
