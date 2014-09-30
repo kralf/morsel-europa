@@ -70,3 +70,12 @@ remake_distribute_deb(
   PASS CMAKE_BUILD_TYPE MORSEL_EUROPA_GIT_REVISION
   EXCLUDE "[.]blend$"
 )
+remake_distribute_deb(
+  DISTRIBUTION trusty
+  SECTION python
+  UPLOAD ppa:kralf/asl
+  DEPENDS morsel-moos-dev morsel-moos-python morsel-data
+    remake pkg-config doxygen
+  PASS CMAKE_BUILD_TYPE MORSEL_EUROPA_GIT_REVISION
+  EXCLUDE "[.]blend$"
+)

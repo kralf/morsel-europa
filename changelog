@@ -1,3 +1,9 @@
+morsel-europa (1.0-37) unstable; urgency=low
+
+  * Release distribution for Ubuntu Trusty Tahr
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 30 Sep 2014 16:15:00 +0100
+
 morsel-europa (1.0-36) unstable; urgency=low
 
   * Added Python configuration
