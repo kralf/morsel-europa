@@ -1,3 +1,9 @@
+morsel-europa (1.0-38) unstable; urgency=low
+
+  * Adaptated to revised Morsel API
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Wed, 01 Oct 2014 11:10:00 +0100
+
 morsel-europa (1.0-37) unstable; urgency=low
 
   * Release distribution for Ubuntu Trusty Tahr

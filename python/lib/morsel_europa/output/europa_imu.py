@@ -22,14 +22,14 @@ from morsel_europa.europac import EuropaIMU as CEuropaIMU
 #-------------------------------------------------------------------------------
 
 class EuropaIMU(Output):
-  def __init__(self, client, sensor, name = "IMU", message = "", **kargs):
-    Output.__init__(self, name, **kargs)
+  def __init__(self, client = None, sensor = None, message = "", **kargs):
+    super(EuropaIMU, self).__init__(**kargs)
 
     self.client = client
     self.sensor = sensor
     self.message = message
 
-    self.publisher = CEuropaIMU(name, self.client.client, self.message)
+    self.publisher = CEuropaIMU("CEuropaIMU", self.client.client, self.message)
     self.publisher.reparentTo(self)
 
 #-------------------------------------------------------------------------------

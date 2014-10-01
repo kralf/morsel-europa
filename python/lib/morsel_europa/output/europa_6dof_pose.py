@@ -22,16 +22,15 @@ from morsel_europa.europac import Europa6DOFOdometry as CEuropa6DOFOdometry
 #-------------------------------------------------------------------------------
 
 class Europa6DOFPose(Output):
-  def __init__(self, client, platform, name = "6DOFPose", message = "",
-      **kargs):
-    Output.__init__(self, name, **kargs)
+  def __init__(self, client = None, platform = None, message = "", **kargs):
+    super(Europa6DOFPose, self).__init__(**kargs)
 
     self.client = client
     self.platform = platform
     self.message = message
 
-    self.publisher = CEuropa6DOFOdometry(name, self.client.client,
-      self.message)
+    self.publisher = CEuropa6DOFOdometry("CEuropa6DOFOdometry",
+      self.client.client, self.message)
     self.publisher.reparentTo(self)
 
 #-------------------------------------------------------------------------------

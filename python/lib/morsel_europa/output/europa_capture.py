@@ -22,13 +22,14 @@ from morsel_europa.europac import EuropaCapture as CEuropaCapture
 #-------------------------------------------------------------------------------
 
 class EuropaCapture(Output):
-  def __init__(self, client, name = "Capture", message = "", **kargs):
-    Output.__init__(self, name, **kargs)
+  def __init__(self, client = None, message = "", **kargs):
+    super(EuropaCapture, self).__init__(**kargs)
 
     self.client = client
     self.message = message
 
-    self.publisher = CEuropaCapture(name, self.client.client, self.message)
+    self.publisher = CEuropaCapture("CEuropaCapture", self.client.client,
+      self.message)
     self.publisher.reparentTo(self)
 
 #-------------------------------------------------------------------------------

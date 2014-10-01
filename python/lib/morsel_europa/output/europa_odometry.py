@@ -22,18 +22,18 @@ from morsel_europa.europac import EuropaOdometry as CEuropaOdometry
 #-------------------------------------------------------------------------------
 
 class EuropaOdometry(Output):
-  def __init__(self, client, platform, name = "Odometry", message = "",
-      **kargs):
-    Output.__init__(self, name, **kargs)
+  def __init__(self, client = None, platform = None, message = "", **kargs):
+    super(EuropaOdometry, self).__init__(**kargs)
 
     self.client = client
     self.platform = platform
     self.message = message
 
-    self.publisher = CEuropaOdometry(name, self.client.client, self.message)
+    self.publisher = CEuropaOdometry("CEuropaOdometry", self.client.client,
+      self.message)
     self.publisher.reparentTo(self)
 
-    self.origin = Node(name+"Origin", parent = self)
+    self.origin = Node("Origin", parent = self)
     self.origin.clearTransform(self.platform)
 
 #-------------------------------------------------------------------------------
